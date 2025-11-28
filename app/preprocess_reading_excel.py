@@ -4,9 +4,7 @@ from openpyxl import load_workbook
 import os
 
 
-# ============================================
 # 1. 한 파일 내 모든 시트 읽고 병합
-# ============================================
 def preprocess_single_excel(file_path):
     print(f"\n=== 파일 처리 시작: {file_path} ===")
 
@@ -27,9 +25,7 @@ def preprocess_single_excel(file_path):
     return combined
 
 
-# ============================================
 # 2. 시트 목록 가져오기
-# ============================================
 def get_sheet_names(file_path):
     wb = load_workbook(file_path, read_only=True)
     sheets = wb.sheetnames
@@ -38,9 +34,7 @@ def get_sheet_names(file_path):
     return sheets
 
 
-# ============================================
 # 3. 시트 하나 처리
-# ============================================
 def process_one_sheet(file_path, sheet_name):
     print(f"\n▶ 시트 처리: {sheet_name}")
 
@@ -71,10 +65,7 @@ def process_one_sheet(file_path, sheet_name):
     print(f"  → {len(data_df)}행 처리 완료")
     return data_df
 
-
-# ============================================
 # 4. 상단 정보(학교/학년/이름) 추출
-# ============================================
 def extract_student_info(df):
     school = grade = student = None
     search_area = df.iloc[:10, :10]
@@ -101,9 +92,7 @@ def clean_grade(grade_value):
     return match.group(1) if match else grade_value
 
 
-# ============================================
 # 5. 컬럼 행 찾기 ("년" "월")
-# ============================================
 def find_header_row(df):
     for i in range(df.shape[0]):
         row_list = df.iloc[i].astype(str).tolist()
@@ -113,9 +102,7 @@ def find_header_row(df):
     return None
 
 
-# ============================================
 # 6. 헤더 적용 후 본 데이터만 추출
-# ============================================
 def build_dataframe(df, header_row):
     headers = df.iloc[header_row].tolist()
     data = df.iloc[header_row + 1:].copy()
@@ -130,9 +117,7 @@ def build_dataframe(df, header_row):
     return data
 
 
-# ============================================
 # 7. 통합 데이터 전처리(열 정리 등)
-# ============================================
 def clean_combined_dataframe(combined_df):
     print("\n=== 데이터 정리 시작 ===")
 
@@ -165,9 +150,7 @@ def clean_combined_dataframe(combined_df):
     return df
 
 
-# ============================================
 # 8. Date 자동 생성
-# ============================================
 def fill_missing_date(df):
     print("\n=== Date 자동 생성 중 ===")
 
@@ -184,22 +167,19 @@ def fill_missing_date(df):
     return df
 
 
-# ============================================
 # 9. 엑셀 저장
-# ============================================
 def save_to_excel(df, output_path):
     df.to_excel(output_path, index=False)
     print(f"\n=== 엑셀 저장 완료: {output_path} ===")
 
 
-# ============================================
+
 # 10. 전체 실행 파이프라인
-# ============================================
 def main(file_path, output_path=None):
     if output_path is None:
         output_folder = 'output'
         os.makedirs(output_folder, exist_ok = True)
-        output_path = os.path.join(output_folder, "전처리파일테스트.xlsx")
+        output_path = os.path.join(output_folder, "전처리파일.xlsx")
 
     combined_df = preprocess_single_excel(file_path)
     cleaned_df = clean_combined_dataframe(combined_df)
@@ -208,7 +188,8 @@ def main(file_path, output_path=None):
     return cleaned_df
 
 
-if __name__ == "__main__":
-    file_path = input("전처리할 파일 경로를 입력하세요: ")
-    main(file_path)
+#Streamlit용으로 잠시 지우기
+# if __name__ == "__main__":
+#     file_path = input("전처리할 파일 경로를 입력하세요: ")
+#     main(file_path)
 
