@@ -1,0 +1,18 @@
+# Ignore input/output data
+input/*
+output/*
+!input/.gitkeep
+!output/.gitkeep
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Streamlit cache
+.streamlit/
