@@ -101,7 +101,7 @@ if uploaded_file and (uploaded_file.name != st.session_state.current_file):
         st.error(f"❌ 전처리된 파일을 찾을 수 없습니다: {processed_path}")
         st.stop()
 
-    df = pd.read_excel(processed_path)
+    df = pd.read_excel(processed_path, engine="openpyxl")
 
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     df = df.sort_values(["이름", "순번"])
