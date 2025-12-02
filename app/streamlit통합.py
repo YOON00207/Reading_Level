@@ -82,7 +82,7 @@ if uploaded_file and (uploaded_file.name != st.session_state.current_file):
         #     os.replace("output/전처리파일테스트.xlsx", processed_path)
 
         # 전처리 함수 실행 후 생성된 파일 확인
-        default_processed = "output/전처리파일테스트.xlsx"
+        default_processed = "output/전처리파일.xlsx"
 
         if os.path.exists(default_processed):
             os.replace(default_processed, processed_path)
