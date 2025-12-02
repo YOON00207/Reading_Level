@@ -34,9 +34,14 @@ if "current_file" not in st.session_state:
     st.session_state.current_file = None
 
 
+
 # 파일 업로드
 #----------------------------------------------------------------------------------
 uploaded_file = st.file_uploader("원본 엑셀 파일을 업로드하세요 (.xlsx)", type=["xlsx"])
+
+# Cloud에서도 input/output 폴더 자동 생성
+os.makedirs("input", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
 # 새로운 파일이 업로드된 경우만 처리하기
 if uploaded_file and (uploaded_file.name != st.session_state.current_file):
@@ -72,15 +77,32 @@ if uploaded_file and (uploaded_file.name != st.session_state.current_file):
         with st.spinner("전처리 중입니다... 잠시만 기다려주세요!"):
             preprocess_main(raw_path)
 
-        # 기본 파일명으로 생성된 전처리 결과를 우리가 원하는 파일명으로 이동
-        if os.path.exists("output/전처리파일테스트.xlsx"):
-            os.replace("output/전처리파일테스트.xlsx", processed_path)
+        # # 기본 파일명으로 생성된 전처리 결과를 우리가 원하는 파일명으로 이동
+        # if os.path.exists("output/전처리파일테스트.xlsx"):
+        #     os.replace("output/전처리파일테스트.xlsx", processed_path)
+
+        # 전처리 함수 실행 후 생성된 파일 확인
+        default_processed = "output/전처리파일테스트.xlsx"
+
+        if os.path.exists(default_processed):
+            os.replace(default_processed, processed_path)
+        else:
+            st.error("❌ 전처리 결과 파일이 생성되지 않았습니다.")
+            st.stop()
+
 
         json.dump({"hash": new_hash}, open(hash_path, "w"))
         st.toast(f"전처리 완료! 저장된 파일: {processed_path}", icon="🎉")
 
     # 전처리된 파일 로드 → session_state에 저장
+    # df = pd.read_excel(processed_path)
+    # 전처리된 파일 로드 전 파일 존재 여부 체크
+    if not os.path.exists(processed_path):
+        st.error(f"❌ 전처리된 파일을 찾을 수 없습니다: {processed_path}")
+        st.stop()
+
     df = pd.read_excel(processed_path)
+
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     df = df.sort_values(["이름", "순번"])
 
